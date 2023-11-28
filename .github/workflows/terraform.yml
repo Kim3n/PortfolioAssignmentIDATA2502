@@ -8,7 +8,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-#
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
@@ -35,11 +34,10 @@ jobs:
           GOOGLE_CREDENTIALS: ${{secrets.GOOGLE_CREDENTIALS}}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -lock=false tfplan
+        run: terraform apply -auto-approve
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-
 
       - name: Test Port Access
         run: |
