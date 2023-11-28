@@ -8,7 +8,7 @@ terraform {
 
   backend "gcs" {
     bucket = "kimandre-example-bucket"
-    prefix = "path/to/your/statefile.tfstate"
+    prefix = "terraform/state"
   }
 }
 
@@ -39,7 +39,7 @@ resource "google_compute_instance" "example_instance" {
     network = google_compute_network.vpc_network.name
 
     access_config {
-      // Allocate a public IP address to the instance
+      // Allocate a public IP address to the instance, GCP allocates public IP address by default with empty block
     }
   }
 }
@@ -50,7 +50,7 @@ resource "google_compute_firewall" "allow-http" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "22"]
+    ports    = ["80", "22"] //Open port 80 for inbound traffic for apache2 and port 22 for SSH
   }
 
   source_ranges = ["0.0.0.0/0"]
