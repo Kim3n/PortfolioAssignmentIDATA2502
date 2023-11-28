@@ -21,23 +21,18 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Save Google Cloud credentials to file
-        run: echo "$GOOGLE_CREDENTIALS" | tr -d '\n' > gcloud.json
-
-      - name: Authenticate with Google Cloud CLI
-        run: gcloud auth activate-service-account --key-file=gcloud.json
-
       - name: Terraform Init
         run: terraform init
         env:
           GOOGLE_CREDENTIALS: ${{secrets.GOOGLE_CREDENTIALS}}
 
+      - name: Terraform Format
+        run: terraform fmt -check
+
       - name: Terraform Plan
-        run: TF_LOG=DEBUG terraform plan -out=tfplan -lock=false -input=false -no-color -var="google_credentials=gcloud.json"
-        working-directory: ${{ github.workspace }}
+        run: terraform plan
         env:
-          TF_LOG: DEBUG
-          TF_VAR_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_CREDENTIALS: ${{secrets.GOOGLE_CREDENTIALS}}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -lock=false tfplan
